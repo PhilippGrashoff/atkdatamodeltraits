@@ -3,6 +3,7 @@
 namespace atkdatamodeltraits;
 
 use Atk4\Data\Model;
+use DateTime;
 
 /**
  * @extends Model<Model>
@@ -13,7 +14,7 @@ trait CreatedDateAndLastUpdatedTrait
     /**
      * Adds created_date and created_by fields to a model
      *
-     * @param array $additionalFieldSettings
+     * @param array<string, mixed> $additionalFieldSettings
      * @return void
      */
     protected function addCreatedDateAndLastUpdateFields(array $additionalFieldSettings = []): void
@@ -49,13 +50,13 @@ trait CreatedDateAndLastUpdatedTrait
                 if ($data['created_date']) {
                     return;
                 }
-                $data['created_date'] = new \DateTime();
+                $data['created_date'] = new DateTime();
             }
         );
         $this->onHook(
             Model::HOOK_BEFORE_UPDATE,
             function (self $model, array &$data) {
-                $data['last_updated'] = new \DateTime();
+                $data['last_updated'] = new DateTime();
             }
         );
     }

@@ -15,11 +15,8 @@ trait CryptIdTrait
 
     use UniqueFieldTrait;
 
-    /** @var string */
-    protected string $cryptIdFieldName = 'crypt_id';
-
     /** @var array<string>
-     * Chars I, l, O, 0 as they can be easily mixed up by humans
+     * Chars I, l, O, 0 are removed as they can be easily mixed up by humans
      */
     protected array $possibleChars = [
         '1',
@@ -82,32 +79,54 @@ trait CryptIdTrait
         'Z',
     ];
 
-    /**
-     * sets a cryptic Id to the fieldName passed. Only does something if the field is empty.
-     *
-     * @return void
-     * @throws Exception
-     * @throws \Atk4\Core\Exception
-     */
-    public function setCryptId(): void
+    protected function addCryptIdFieldAndHooks(string $fieldName): static
     {
-        if (!$this->get($this->cryptIdFieldName)) {
-            $this->set($this->cryptIdFieldName, $this->generateCryptId());
-            //check if another Record has the same crypt_id, if so generate a new one
-            while (!$this->isFieldUnique($this->cryptIdFieldName)) {
-                $this->set($this->cryptIdFieldName, $this->generateCryptId());
+        $this->addField(
+            $fieldName,
+            [
+                'type' => 'string',
+                'system' => true,
+                'required' => true
+            ]
+        );
+
+        $this->onHook(
+            Model::HOOK_BEFORE_INSERT,
+            function (self $entity, array &$data) use ($fieldName) {
+                if ($this->get($fieldName) === null) { //leave option to manually set crypt ID, e.g. for imports
+                    $data[$fieldName] = $entity->setCryptId($fieldName);
+                }
             }
-        } else {
-            $this->getField($this->cryptIdFieldName)->readOnly = true;
-        }
+        );
+
+
+        $this->onHook(
+            Model::HOOK_AFTER_LOAD,
+            function (self $entity) use ($fieldName) {
+                $entity->getField($fieldName)->readOnly = true;
+            }
+        );
+
+        return $this;
     }
 
     /**
+     * sets a cryptic ID to the fieldName passed. Only does something if the field is empty.
+     * Needs to return the generated crypt ID so it can be used in Model::HOOK_BEFORE_INSERT
+     *
+     * @param string $fieldName
      * @return string
+     * @throws Exception
+     * @throws \Atk4\Core\Exception
      */
-    public function getCryptId(): string
+    protected function setCryptId(string $fieldName): string
     {
-        return $this->get($this->cryptIdFieldName);
+        $this->set($fieldName, $this->generateCryptId());
+        //check if another Record has the same crypt_id, if so generate a new one
+        while (!$this->isFieldUnique($fieldName)) {
+            $this->set($fieldName, $this->generateCryptId());
+        }
+        return $this->get($fieldName);
     }
 
     /**

@@ -31,8 +31,9 @@ trait UniqueFieldTrait
      * @return bool
      * @throws Exception
      */
-    public function isFieldUnique(string $fieldName,): bool
+    public function isFieldUnique(string $fieldName): bool
     {
+        $this->assertIsEntity();
         if (empty($this->get($fieldName))) {
             throw new Exception(
                 'The value for a unique field may not be empty. Field name: ' . $fieldName . ' in ' . __FUNCTION__
@@ -41,8 +42,10 @@ trait UniqueFieldTrait
         $checkModel = new static($this->getPersistence());
         //only load ID field to save performance
         $checkModel->setOnlyFields([$this->idField, $fieldName]);
-        $checkModel->addCondition($this->idField, '!=', $this->get($this->idField));
         $checkModel->addCondition($fieldName, '=', $this->get($fieldName));
+        if ($this->isLoaded()) {
+            $checkModel->addCondition($this->idField, '!=', $this->get($this->idField));
+        }
 
         return $checkModel->tryLoadAny() === null;
     }

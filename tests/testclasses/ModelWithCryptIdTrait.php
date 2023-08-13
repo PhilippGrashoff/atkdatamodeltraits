@@ -11,24 +11,26 @@ class ModelWithCryptIdTrait extends Model
 {
     use CryptIdTrait;
 
+    protected bool $generateStaticCryptIdOnFirstRun = false;
+
+    protected int $runCounter = 0;
+
     public $table = 'ModelWithCryptIdTrait';
 
     protected function init(): void
     {
         parent::init();
-        $this->addField('crypt_id');
-        $this->onHook(
-            Model::HOOK_BEFORE_SAVE,
-            function (self $model, bool $isUpdate) {
-                $model->setCryptId();
-            }
-        );
+        $this->addCryptIdFieldAndHooks('crypt_id');
     }
 
     protected function generateCryptId(): string
     {
         $cryptId = '';
-        for ($i = 0; $i < 10; $i++) {
+        if ($this->generateStaticCryptIdOnFirstRun && $this->runCounter === 0) {
+            $this->runCounter++;
+            return "abcdefghijkl";
+        }
+        for ($i = 0; $i < 12; $i++) {
             $cryptId .= $this->getRandomChar();
         }
 
