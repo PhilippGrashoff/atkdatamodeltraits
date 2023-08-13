@@ -6,16 +6,16 @@ use Atk4\Data\Exception;
 use Atk4\Data\Model;
 use Atk4\Data\Persistence;
 use atkdatamodeltraits\CryptIdTrait;
-use atkdatamodeltraits\TestCase;
 use atkdatamodeltraits\tests\testclasses\ModelWithCryptIdTrait;
+use atkextendedtestcase\TestCase;
 
 
 class CryptIdTraitTest extends TestCase
 {
 
-    protected $sqlitePersistenceModels = [ModelWithCryptIdTrait::class];
+    protected array $sqlitePersistenceModels = [ModelWithCryptIdTrait::class];
 
-    public function testExceptionOverwriteGenerate()
+    public function testExceptionOverwriteGenerate(): void
     {
         $modelClass = new class() extends Model {
             use CryptIdTrait;
@@ -24,26 +24,26 @@ class CryptIdTraitTest extends TestCase
 
         };
         $model = new $modelClass(new Persistence\Array_());
-        self::expectException(Exception::class);
+        self::expectExceptionMessage('generateCryptId must be extended in child Model');
         $this->callProtected($model, 'generateCryptId');
     }
 
-    public function testsetCryptId()
+    public function testsetCryptId(): void
     {
-        $model = (new ModelWithCryptIdTrait($this->getSqliteTestPersistence()))->createEntity();
-        $model->setCryptId();
+        $entity = (new ModelWithCryptIdTrait($this->getSqliteTestPersistence()))->createEntity();
+        $entity->setCryptId();
         self::assertSame(
             12,
-            strlen($model->get('crypt_id'))
+            strlen($entity->get('crypt_id'))
         );
     }
 
 
-    public function testFieldSetToReadOnlyIfCryptIdNotEmpty()
+    public function testFieldSetToReadOnlyIfCryptIdNotEmpty(): void
     {
-        $model = (new ModelWithCryptIdTrait($this->getSqliteTestPersistence()))->createEntity();
-        $model->save();
-        $model->setCryptId();
-        self::assertTrue($model->getField('crypt_id')->read_only);
+        $entity = (new ModelWithCryptIdTrait($this->getSqliteTestPersistence()))->createEntity();
+        $entity->setCryptId();
+        $entity->save();
+        self::assertTrue($entity->getField('crypt_id')->readOnly);
     }
 }

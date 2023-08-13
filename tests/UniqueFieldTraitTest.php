@@ -2,49 +2,42 @@
 
 namespace atkdatamodeltraits\tests;
 
-use atkdatamodeltraits\TestCase;
-use Atk4\Data\Exception;
 use Atk4\Data\Persistence;
 use atkdatamodeltraits\tests\testclasses\ModelWithUniqueFieldTrait;
+use atkextendedtestcase\TestCase;
 
 
 class UniqueFieldTraitTest extends TestCase
 {
 
-    protected $sqlitePersistenceModels = [ModelWithUniqueFieldTrait::class];
+    protected array $sqlitePersistenceModels = [ModelWithUniqueFieldTrait::class];
 
-    public function testExceptionOnEmptyValue()
+    public function testExceptionOnEmptyValue(): void
     {
-        $model = $this->getTestModel();
-        self::expectException(Exception::class);
-        $model->isFieldUnique('unique_field');
+        $entity = $this->getTestEntity();
+        self::expectExceptionMessage(
+            'The value for a unique field may not be empty. Field name: unique_field in isFieldUnique'
+        );
+        $entity->isFieldUnique('unique_field');
     }
 
-    public function testNoExceptionIfAllowEmptyIsTrue()
-    {
-        $model = $this->getTestModel();
-        $model->isFieldUnique('unique_field', true);
-        self::expectException(Exception::class);
-        $model->isFieldUnique('unique_field');
-    }
-
-    public function testReturnFalseIfOtherRecordWithSameUniqueFieldValueExists()
+    public function testReturnFalseIfOtherRecordWithSameUniqueFieldValueExists(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $model = $this->getTestModel($persistence);
-        $model->set('unique_field', 'ABC');
-        $model->save();
-        self::assertTrue($model->isFieldUnique('unique_field'));
+        $entity = $this->getTestEntity($persistence);
+        $entity->set('unique_field', 'ABC');
+        $entity->save();
+        self::assertTrue($entity->isFieldUnique('unique_field'));
 
-        $model2 = $this->getTestModel($persistence);
-        $model2->save();
-        $model2->set('unique_field', 'DEF');
-        self::assertTrue($model2->isFieldUnique('unique_field'));
-        $model2->set('unique_field', 'ABC');
-        self::assertFalse($model2->isFieldUnique('unique_field'));
+        $entity2 = $this->getTestEntity($persistence);
+        $entity2->save();
+        $entity2->set('unique_field', 'DEF');
+        self::assertTrue($entity2->isFieldUnique('unique_field'));
+        $entity2->set('unique_field', 'ABC');
+        self::assertFalse($entity2->isFieldUnique('unique_field'));
     }
 
-    protected function getTestModel(Persistence $persistence = null): ModelWithUniqueFieldTrait
+    protected function getTestEntity(Persistence $persistence = null): ModelWithUniqueFieldTrait
     {
         return (new ModelWithUniqueFieldTrait($persistence ?: $this->getSqliteTestPersistence()))->createEntity();
     }

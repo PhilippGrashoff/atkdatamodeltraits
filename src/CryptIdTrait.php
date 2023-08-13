@@ -1,10 +1,12 @@
-<?php declare(strict_types=1$currentDateTime);
+<?php declare(strict_types=1);
 
 namespace atkdatamodeltraits;
 
 use Atk4\Data\Exception;
+use Atk4\Data\Model;
 
 /**
+ * @extends Model<Model>
  * create cryptic IDs like X3gkd9S-df29D3j in a format if your choice. To do so, implement generateCryptId() function
  * in each Model using this trait.
  */
@@ -13,12 +15,13 @@ trait CryptIdTrait
 
     use UniqueFieldTrait;
 
-    //@codeCoverageIgnore Seems some Bug in Code Coverage, this line is marked as not covered
+    /** @var string */
+    protected string $cryptIdFieldName = 'crypt_id';
 
-    protected $cryptIdFieldName = 'crypt_id';
-
-    //removed I, l, O, 0 as they can be easily mixed up by humans
-    protected $possibleChars = [
+    /** @var array<string>
+     * Chars I, l, O, 0 as they can be easily mixed up by humans
+     */
+    protected array $possibleChars = [
         '1',
         '2',
         '3',
@@ -81,6 +84,10 @@ trait CryptIdTrait
 
     /**
      * sets a cryptic Id to the fieldName passed. Only does something if the field is empty.
+     *
+     * @return void
+     * @throws Exception
+     * @throws \Atk4\Core\Exception
      */
     public function setCryptId(): void
     {
@@ -91,25 +98,34 @@ trait CryptIdTrait
                 $this->set($this->cryptIdFieldName, $this->generateCryptId());
             }
         } else {
-            $this->getField($this->cryptIdFieldName)->read_only = true;
+            $this->getField($this->cryptIdFieldName)->readOnly = true;
         }
     }
 
+    /**
+     * @return string
+     */
     public function getCryptId(): string
     {
         return $this->get($this->cryptIdFieldName);
     }
 
     /**
-     * Overwrite to your own needs in Models using this trait
+     * Extend this to your own needs in Models using this trait
+     *
+     * @return string
+     * @throws Exception
      */
     protected function generateCryptId(): string
     {
-        throw new Exception(__FUNCTION__ . ' must be extended in child model');
+        throw new Exception(__FUNCTION__ . ' must be extended in child Model');
     }
 
     /**
      * returns a random char from possibleChars. This function is usually called by generateCryptId
+     *
+     * @return string
+     * @throws \Exception
      */
     protected function getRandomChar(): string
     {

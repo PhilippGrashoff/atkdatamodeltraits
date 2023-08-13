@@ -13,20 +13,25 @@ class ModelWithCryptIdTrait extends Model
 
     public $table = 'ModelWithCryptIdTrait';
 
-    public $addition = '';
-
-    protected $createSameCryptId = false;
-
-
     protected function init(): void
     {
         parent::init();
         $this->addField('crypt_id');
         $this->onHook(
             Model::HOOK_BEFORE_SAVE,
-            function (self $model, $isUpdate) {
+            function (self $model, bool $isUpdate) {
                 $model->setCryptId();
             }
         );
+    }
+
+    protected function generateCryptId(): string
+    {
+        $cryptId = '';
+        for ($i = 0; $i < 10; $i++) {
+            $cryptId .= $this->getRandomChar();
+        }
+
+        return $cryptId;
     }
 }

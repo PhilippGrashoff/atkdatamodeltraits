@@ -3,19 +3,22 @@
 namespace atkdatamodeltraits;
 
 use Atk4\Data\Exception;
+use Atk4\Data\Model;
 
 /**
+ * @extends Model<Model>
+ *
  * Use the function provided by this trait to check if no other record in the same table has the same value.
  * Example: Your model has a field which must be unique. Before inserting into Database you want to make sure
  * no DB error will occur due to duplicate value for the field which must be unique.
  * $this->onHook(
  *    Model::HOOK_BEFORE_SAVE,
- *    function($model, $isUpdate) {
+ *    function(self $entity, bool $isUpdate) {
  *        if($isUpdate) {
  *            return;
  *        }
- *        while(!$model->isFieldUnique('some_field_which_must_be_unique) {
- *            $model->recalculateSomeFieldWhichMustBeUnique(); //some function which recalculates field value.
+ *        while(!$entity->isFieldUnique('some_field_which_must_be_unique) {
+ *            //some function which recalculates field value.
  *        }
  *    }
  * );
@@ -23,25 +26,24 @@ use Atk4\Data\Exception;
 trait UniqueFieldTrait
 {
 
-    public function isFieldUnique(string $fieldName, $allowEmpty = false): bool
+    /**
+     * @param string $fieldName
+     * @return bool
+     * @throws Exception
+     */
+    public function isFieldUnique(string $fieldName,): bool
     {
-        if (
-            empty($this->get($fieldName))
-            && !$allowEmpty
-        ) {
+        if (empty($this->get($fieldName))) {
             throw new Exception(
                 'The value for a unique field may not be empty. Field name: ' . $fieldName . ' in ' . __FUNCTION__
             );
         }
-        $other = new static($this->persistence);
-        //only load field to save performance
-        $other->setOnlyFields([$this->id_field, $fieldName]);
-        $other->addCondition($this->id_field, '!=', $this->get($this->id_field));
-        try {
-            $other->loadBy($fieldName, $this->get($fieldName));
-            return false;
-        } catch (Exception $e) {
-            return true;
-        }
+        $checkModel = new static($this->getPersistence());
+        //only load ID field to save performance
+        $checkModel->setOnlyFields([$this->idField, $fieldName]);
+        $checkModel->addCondition($this->idField, '!=', $this->get($this->idField));
+        $checkModel->addCondition($fieldName, '=', $this->get($fieldName));
+
+        return $checkModel->tryLoadAny() === null;
     }
 }
