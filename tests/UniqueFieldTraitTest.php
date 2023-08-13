@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace traitsforatkdata\tests;
+namespace atkdatamodeltraits\tests;
 
-use traitsforatkdata\TestCase;
+use atkdatamodeltraits\TestCase;
 use Atk4\Data\Exception;
 use Atk4\Data\Persistence;
-use traitsforatkdata\tests\testclasses\ModelWithUniqueFieldTrait;
+use atkdatamodeltraits\tests\testclasses\ModelWithUniqueFieldTrait;
 
 
 class UniqueFieldTraitTest extends TestCase

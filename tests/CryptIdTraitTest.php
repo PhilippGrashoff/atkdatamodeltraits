@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace traitsforatkdata\tests;
+namespace atkdatamodeltraits\tests;
 
 use Atk4\Data\Exception;
 use Atk4\Data\Model;
 use Atk4\Data\Persistence;
-use traitsforatkdata\CryptIdTrait;
-use traitsforatkdata\TestCase;
-use traitsforatkdata\tests\testclasses\ModelWithCryptIdTrait;
+use atkdatamodeltraits\CryptIdTrait;
+use atkdatamodeltraits\TestCase;
+use atkdatamodeltraits\tests\testclasses\ModelWithCryptIdTrait;
 
 
 class CryptIdTraitTest extends TestCase

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace traitsforatkdata\tests\testclasses;
+namespace atkdatamodeltraits\tests\testclasses;
 
 use Atk4\Data\Model;
-use traitsforatkdata\CryptIdTrait;
+use atkdatamodeltraits\CryptIdTrait;
 
 class ModelWithCryptIdTrait extends Model
 {

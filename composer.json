@@ -1,6 +1,6 @@
 {
-  "name": "philippgrashoff/secondarymodelforatk",
-  "description": "",
+  "name": "philippgrashoff/atkdatamodeltraits",
+  "description": "A small collection of traits to be used with Atk4\\Data\\Model",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
@@ -18,12 +18,12 @@
   },
   "autoload": {
     "psr-4": {
-      "secondarymodelforatk\\": "src"
+      "atkdatamodeltraits\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "secondarymodelforatk\\tests\\": "tests"
+      "atkdatamodeltraits\\tests\\": "tests"
     }
   }
 }

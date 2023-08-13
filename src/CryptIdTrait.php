@@ -1,6 +1,6 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types=1$currentDateTime);
 
-namespace traitsforatkdata;
+namespace atkdatamodeltraits;
 
 use Atk4\Data\Exception;
 

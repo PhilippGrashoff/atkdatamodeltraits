@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace traitsforatkdata\tests;
+namespace atkdatamodeltraits\tests;
 
-use traitsforatkdata\TestCase;
-use traitsforatkdata\tests\testclasses\ModelWithCreatedDateAndLastUpdatedTrait;
+use atkdatamodeltraits\tests\testclasses\ModelWithCreatedDateAndLastUpdatedTrait;
+use atkextendedtestcase\TestCase;
 
 
 class CreatedDateAndLastUpdatedTraitTest extends TestCase
 {
 
-    protected $sqlitePersistenceModels = [ModelWithCreatedDateAndLastUpdatedTrait::class];
+    protected array $sqlitePersistenceModels = [ModelWithCreatedDateAndLastUpdatedTrait::class];
 
-    public function testCreatedDateAndLastUpdated()
+    public function testCreatedDateAndLastUpdated(): void
     {
         $currentDateTime = new \DateTime();
         $model = new ModelWithCreatedDateAndLastUpdatedTrait($this->getSqliteTestPersistence());
@@ -44,7 +44,7 @@ class CreatedDateAndLastUpdatedTraitTest extends TestCase
      * before, last_updated was set in before update hook. That caused models to be always saved even if
      * there was nothing to save. This was changed, this test ensures that this stays.
      */
-    public function testNoFieldsDirtyNothingIsSaved()
+    public function testNoFieldsDirtyNothingIsSaved(): void
     {
         $entity = (new ModelWithCreatedDateAndLastUpdatedTrait($this->getSqliteTestPersistence()))->createEntity();
         $entity->save();
@@ -67,7 +67,7 @@ class CreatedDateAndLastUpdatedTraitTest extends TestCase
         );
     }
 
-    public function testSetCreatedDateNotOverwritten()
+    public function testSetCreatedDateNotOverwritten(): void
     {
         $entity = (new ModelWithCreatedDateAndLastUpdatedTrait($this->getSqliteTestPersistence()))->createEntity();
         $entity->set('created_date', (new \DateTime())->modify('-1 Month'));
