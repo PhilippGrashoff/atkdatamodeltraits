@@ -27,8 +27,8 @@ class CreatedDateAndLastUpdatedTraitTest extends TestCase
 
         $entity->set('name', 'someName');
         $entity->save();
-        $newDateTime = new \DateTime();
 
+        $newDateTime = new \DateTime();
         self::assertNotEquals(
             $newDateTime->format(DATE_ATOM),
             $entity->get('created_date')->format(DATE_ATOM)
@@ -48,13 +48,10 @@ class CreatedDateAndLastUpdatedTraitTest extends TestCase
     {
         $entity = (new ModelWithCreatedDateAndLastUpdatedTrait($this->getSqliteTestPersistence()))->createEntity();
         $entity->save();
-        $lastUpdated = $entity->get('last_updated');
-        self::assertNull($lastUpdated);
+        self::assertNull($entity->get('last_updated'));
         $entity->save();
-        self::assertSame(
-            $entity->get('last_updated'),
-            $lastUpdated
-        );
+        self::assertNull($entity->get('last_updated'));
+
         $entity->set('name', 'somename');
         $entity->save();
         self::assertSame(
@@ -64,6 +61,13 @@ class CreatedDateAndLastUpdatedTraitTest extends TestCase
         self::assertInstanceOf(
             \DateTimeInterface::class,
             $entity->get('last_updated')
+        );
+        $lastUpdated = $entity->get('last_updated');
+        sleep(1);
+        $entity->save();
+        self::assertSame(
+            $lastUpdated->format(DATE_ATOM),
+            $entity->get('last_updated')->format(DATE_ATOM)
         );
     }
 

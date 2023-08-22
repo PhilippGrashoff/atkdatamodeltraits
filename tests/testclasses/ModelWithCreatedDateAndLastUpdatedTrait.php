@@ -18,7 +18,7 @@ class ModelWithCreatedDateAndLastUpdatedTrait extends Model
     {
         parent::init();
         $this->addField('name');
-        $this->addCreatedDateAndLastUpdateFields();
-        $this->addCreatedDateAndLastUpdatedHook();
+        $this->addCreatedDateFieldAndHook();
+        $this->addLastUpdatedFieldAndHook();
     }
 }
