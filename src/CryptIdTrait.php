@@ -99,7 +99,6 @@ trait CryptIdTrait
             }
         );
 
-
         $this->onHook(
             Model::HOOK_AFTER_LOAD,
             function (self $entity) use ($fieldName) {
@@ -112,7 +111,7 @@ trait CryptIdTrait
 
     /**
      * sets a cryptic ID to the fieldName passed. Only does something if the field is empty.
-     * Needs to return the generated crypt ID so it can be used in Model::HOOK_BEFORE_INSERT
+     * Needs to return the generated crypt ID, so it can be used in Model::HOOK_BEFORE_INSERT
      *
      * @param string $fieldName
      * @return string

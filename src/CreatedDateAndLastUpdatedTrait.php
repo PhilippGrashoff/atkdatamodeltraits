@@ -14,7 +14,7 @@ trait CreatedDateAndLastUpdatedTrait
     /**
      * Adds created_date field and a fitting hook
      *
-     * @param array<string, mixed> $additionalFieldSettings
+     * @param array<string, mixed> $additionalFieldSettings e.g. for persist_timezone
      * @param bool $addHook
      * @return void
      */
@@ -34,8 +34,8 @@ trait CreatedDateAndLastUpdatedTrait
             $this->onHook(
                 Model::HOOK_BEFORE_INSERT,
                 function (self $model, array &$data) {
-                    //if for some reason created_date is already set, leave it as is. This way created_date can be manually
-                    //adjusted e.g. when importing records from another system.
+                    //if for some reason created_date is already set, leave it as is. This way created_date can be
+                    // manually adjusted, e.g. when importing records from another system.
                     if ($data['created_date']) {
                         return;
                     }

@@ -17,7 +17,7 @@ use Atk4\Data\Model;
  *        if($isUpdate) {
  *            return;
  *        }
- *        while(!$entity->isFieldUnique('some_field_which_must_be_unique) {
+ *        while(!$entity->isFieldUnique('some_field_which_must_be_unique')) {
  *            //some function which recalculates field value.
  *        }
  *    }

@@ -23,6 +23,9 @@ class ModelWithCryptIdTrait extends Model
         $this->addCryptIdFieldAndHooks('crypt_id');
     }
 
+    /**
+     * Hacky function for tests
+     */
     protected function generateCryptId(): string
     {
         $cryptId = '';
