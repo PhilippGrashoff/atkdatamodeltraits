@@ -1,4 +1,7 @@
 # atkdatamodeltraits
+
+[![codecov](https://codecov.io/gh/PhilippGrashoff/atkdatamodeltraits/branch/main/graph/badge.svg)](https://codecov.io/gh/PhilippGrashoff/atkdatamodeltraits)
+
 A small collection of traits to be used with [Atk4\Data\Model](https://github.com/atk4/data/blob/develop/src/Model.php).
 
 # CreatedDateAndLastUpdatedTrait
