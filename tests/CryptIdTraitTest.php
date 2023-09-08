@@ -1,18 +1,23 @@
 <?php declare(strict_types=1);
 
-namespace atkdatamodeltraits\tests;
+namespace PhilippR\Atk4\ModelTraits\Tests;
 
 use Atk4\Data\Model;
 use Atk4\Data\Persistence;
-use atkdatamodeltraits\CryptIdTrait;
-use atkdatamodeltraits\tests\testclasses\ModelWithCryptIdTrait;
-use atkextendedtestcase\TestCase;
+use Atk4\Data\Persistence\Sql;
+use Atk4\Data\Schema\TestCase;
+use PhilippR\Atk4\ModelTraits\CryptIdTrait;
+use PhilippR\Atk4\ModelTraits\Tests\Testclasses\ModelWithCryptIdTrait;
 
 
 class CryptIdTraitTest extends TestCase
 {
-
-    protected array $sqlitePersistenceModels = [ModelWithCryptIdTrait::class];
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->db = new Sql('sqlite::memory:');
+        $this->createMigrator(new ModelWithCryptIdTrait($this->db))->create();
+    }
 
     public function testExceptionOverwriteGenerate(): void
     {
@@ -29,7 +34,7 @@ class CryptIdTraitTest extends TestCase
 
     public function testsetCryptId(): void
     {
-        $entity = (new ModelWithCryptIdTrait($this->getSqliteTestPersistence()))->createEntity();
+        $entity = (new ModelWithCryptIdTrait($this->db))->createEntity();
         $entity->save();
         self::assertSame(
             12,
@@ -39,16 +44,16 @@ class CryptIdTraitTest extends TestCase
 
     public function testFieldSetToReadOnlyIfCryptIdNotEmpty(): void
     {
-        $entity = (new ModelWithCryptIdTrait($this->getSqliteTestPersistence()))->createEntity();
+        $entity = (new ModelWithCryptIdTrait($this->db))->createEntity();
         $entity->save(); //save automatically reloads by default
         self::assertTrue($entity->getField('crypt_id')->readOnly);
     }
 
     public function testNewCryptIdIsGeneratedIfGeneratedOneAlreadyExists(): void
     {
-        $persistence = $this->getSqliteTestPersistence();
+        
         $entity = (new ModelWithCryptIdTrait(
-            $persistence,
+            $this->db,
             ['generateStaticCryptIdOnFirstRun' => true]
         ))->createEntity();
         $entity->save();
@@ -60,7 +65,7 @@ class CryptIdTraitTest extends TestCase
         //this entity will create the very same ID on the first run of setCryptId(), thus the corresponding line
         //within setCryptId is executed
         $entity2 = (new ModelWithCryptIdTrait(
-            $persistence,
+            $this->db,
             ['generateStaticCryptIdOnFirstRun' => true]
         ))->createEntity();
         $entity2->save();

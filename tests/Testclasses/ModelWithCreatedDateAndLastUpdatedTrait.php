@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace atkdatamodeltraits\tests\testclasses;
+namespace PhilippR\Atk4\ModelTraits\Tests\Testclasses;
 
 use Atk4\Data\Model;
-use atkdatamodeltraits\CreatedDateAndLastUpdatedTrait;
+use PhilippR\Atk4\ModelTraits\CreatedDateAndLastUpdatedTrait;
 
 class ModelWithCreatedDateAndLastUpdatedTrait extends Model
 {

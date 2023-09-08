@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace atkdatamodeltraits;
+namespace PhilippR\Atk4\ModelTraits;
 
 use Atk4\Data\Exception;
 use Atk4\Data\Model;

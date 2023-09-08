@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace atkdatamodeltraits\tests\testclasses;
+namespace PhilippR\Atk4\ModelTraits\Tests\Testclasses;
 
 use Atk4\Data\Model;
-use atkdatamodeltraits\UniqueFieldTrait;
+use PhilippR\Atk4\ModelTraits\UniqueFieldTrait;
 
 class ModelWithUniqueFieldTrait extends Model
 {

@@ -1,16 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace atkdatamodeltraits\tests;
+namespace PhilippR\Atk4\ModelTraits\Tests;
 
 use Atk4\Data\Persistence;
-use atkdatamodeltraits\tests\testclasses\ModelWithUniqueFieldTrait;
-use atkextendedtestcase\TestCase;
+use Atk4\Data\Persistence\Sql;
+use Atk4\Data\Schema\TestCase;
+use PhilippR\Atk4\ModelTraits\Tests\Testclasses\ModelWithUniqueFieldTrait;
 
 
 class UniqueFieldTraitTest extends TestCase
 {
 
-    protected array $sqlitePersistenceModels = [ModelWithUniqueFieldTrait::class];
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->db = new Sql('sqlite::memory:');
+        $this->createMigrator(new ModelWithUniqueFieldTrait($this->db))->create();
+    }
 
     public function testExceptionOnEmptyValue(): void
     {
@@ -23,13 +29,12 @@ class UniqueFieldTraitTest extends TestCase
 
     public function testReturnFalseIfOtherRecordWithSameUniqueFieldValueExists(): void
     {
-        $persistence = $this->getSqliteTestPersistence();
-        $entity = $this->getTestEntity($persistence);
+        $entity = $this->getTestEntity();
         $entity->set('unique_field', 'ABC');
         $entity->save();
         self::assertTrue($entity->isFieldUnique('unique_field'));
 
-        $entity2 = $this->getTestEntity($persistence);
+        $entity2 = $this->getTestEntity();
         $entity2->save();
         $entity2->set('unique_field', 'DEF');
         self::assertTrue($entity2->isFieldUnique('unique_field'));
@@ -37,8 +42,8 @@ class UniqueFieldTraitTest extends TestCase
         self::assertFalse($entity2->isFieldUnique('unique_field'));
     }
 
-    protected function getTestEntity(Persistence $persistence = null): ModelWithUniqueFieldTrait
+    protected function getTestEntity(): ModelWithUniqueFieldTrait
     {
-        return (new ModelWithUniqueFieldTrait($persistence ?: $this->getSqliteTestPersistence()))->createEntity();
+        return (new ModelWithUniqueFieldTrait($this->db))->createEntity();
     }
 }
