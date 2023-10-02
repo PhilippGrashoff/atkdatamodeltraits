@@ -39,7 +39,7 @@ trait UniqueFieldTrait
                 'The value for a unique field may not be empty. Field name: ' . $fieldName . ' in ' . __FUNCTION__
             );
         }
-        $checkModel = new static($this->getPersistence());
+        $checkModel = new static($this->getModel()->getPersistence());
         //only load ID field to save performance
         $checkModel->setOnlyFields([$this->idField, $fieldName]);
         $checkModel->addCondition($fieldName, '=', $this->get($fieldName));
