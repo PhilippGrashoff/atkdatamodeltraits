@@ -40,8 +40,6 @@ trait UniqueFieldTrait
             );
         }
         $checkModel = new static($this->getModel()->getPersistence());
-        //only load ID field to save performance
-        $checkModel->setOnlyFields([$this->idField, $fieldName]);
         $checkModel->addCondition($fieldName, '=', $this->get($fieldName));
         if ($this->isLoaded()) {
             $checkModel->addCondition($this->idField, '!=', $this->get($this->idField));
