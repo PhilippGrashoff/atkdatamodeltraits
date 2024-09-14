@@ -29,7 +29,10 @@ class CryptIdTraitTest extends TestCase
         };
         $model = new $modelClass(new Persistence\Array_());
         self::expectExceptionMessage('generateCryptId must be extended in child Model');
-        $this->callProtected($model, 'generateCryptId');
+        $helper = \Closure::bind(function () use ($model) {
+            $model->generateCryptId();
+        }, null, $model);
+        $helper();
     }
 
     public function testsetCryptId(): void
@@ -51,7 +54,6 @@ class CryptIdTraitTest extends TestCase
 
     public function testNewCryptIdIsGeneratedIfGeneratedOneAlreadyExists(): void
     {
-        
         $entity = (new ModelWithCryptIdTrait(
             $this->db,
             ['generateStaticCryptIdOnFirstRun' => true]
