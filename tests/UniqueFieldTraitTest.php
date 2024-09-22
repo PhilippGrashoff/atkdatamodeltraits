@@ -2,7 +2,6 @@
 
 namespace PhilippR\Atk4\ModelTraits\Tests;
 
-use Atk4\Data\Persistence;
 use Atk4\Data\Persistence\Sql;
 use Atk4\Data\Schema\TestCase;
 use PhilippR\Atk4\ModelTraits\Tests\Testclasses\ModelWithUniqueFieldTrait;
