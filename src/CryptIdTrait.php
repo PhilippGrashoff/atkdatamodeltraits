@@ -149,4 +149,14 @@ trait CryptIdTrait
     {
         return $this->possibleChars[random_int(0, count($this->possibleChars) - 1)];
     }
+
+    protected function getRandomCharBlock(int $amountChars): string
+    {
+        $return = '';
+        for ($i = 0; $i < $amountChars; $i++) {
+            $return .= $this->getRandomChar();
+        }
+
+        return $return;
+    }
 }

@@ -23,9 +23,7 @@ class CryptIdTraitTest extends TestCase
     {
         $modelClass = new class() extends Model {
             use CryptIdTrait;
-
             public $table = 'sometable';
-
         };
         $model = new $modelClass(new Persistence\Array_());
         self::expectExceptionMessage('generateCryptId must be extended in child Model');
@@ -74,6 +72,26 @@ class CryptIdTraitTest extends TestCase
         self::assertNotSame(
             'abcdefghijkl',
             $entity2->get('crypt_id')
+        );
+    }
+
+    public function testGetRandomCharBlock(): void
+    {
+        $entity = (new ModelWithCryptIdTrait($this->db))->createEntity();
+        $helper = \Closure::bind(
+            function (int $amount) use ($entity) {
+                return $entity->getRandomCharBlock($amount);
+            },
+            null,
+            $entity
+        );
+        self::assertSame(
+            4,
+            strlen($helper(4))
+        );
+        self::assertSame(
+            7,
+            strlen($helper(7))
         );
     }
 }
